@@ -274,7 +274,7 @@
                     [10000 20000 30000])
                @[11111 22222 33333]))
 # 77e62a2
-(assert (deep= (map + 
+(assert (deep= (map +
                     [1 2 3] [10 20 30] [100 200 300] [1000 2000 3000]
                     [10000 20000 30000] [100000 200000 300000])
                @[111111 222222 333333]))
@@ -290,7 +290,8 @@
 # Variadic arguments to map-like functions
 # 77e62a2
 (assert (deep= (mapcat tuple [1 2 3 4] [5 6 7 8]) @[1 5 2 6 3 7 4 8]))
-(assert (deep= (keep |(if (> $1 0) (/ $0 $1)) [1 2 3 4 5] [1 2 1 0 1]) @[1 1 3 5]))
+(assert (deep= (keep |(if (> $1 0) (/ $0 $1)) [1 2 3 4 5] [1 2 1 0 1])
+               @[1 1 3 5]))
 
 (assert (= (count = [1 3 2 4 3 5 4 2 1] [1 2 3 4 5 4 3 2 1]) 4))
 
@@ -300,15 +301,8 @@
 (assert (= (all = (range 5) (range 5)) true))
 (assert (= (all not= [1 2 3 4 5] [5 4 3 2 1]) false))
 
+# 4194374
 (assert (= false (deep-not= [1] [1])) "issue #1149")
-
-# Sort function
-# 2ca9300bf
-(assert (deep=
-          (range 99)
-          (sort (mapcat (fn [[x y z]] [z y x]) (partition 3 (range 99)))))
-        "sort 5")
-(assert (<= ;(sort (map (fn [x] (math/random)) (range 1000)))) "sort 6")
 
 # Merge sort
 # f5b29b8
@@ -350,6 +344,14 @@
 (assert (deep= @[1 2 3 4 5] (sorted [5 3 4 1 2])) "sort 3")
 (assert (deep= @[{:a 1} {:a 4} {:a 7}]
                (sorted-by |($ :a) [{:a 4} {:a 7} {:a 1}])) "sort 4")
+
+# Sort function
+# 2ca9300bf
+(assert (deep=
+          (range 99)
+          (sort (mapcat (fn [[x y z]] [z y x]) (partition 3 (range 99)))))
+        "sort 5")
+(assert (<= ;(sort (map (fn [x] (math/random)) (range 1000)))) "sort 6")
 
 # And and or
 # c16a9d846
@@ -393,6 +395,7 @@
 (def- a 100)
 (assert (= a 100) "def-")
 
+# bc8be266f
 (assert (= :first
           (match @[1 3 5]
                  @[x y z] :first

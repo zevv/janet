@@ -20,6 +20,7 @@
 
 (import ./helper :prefix "" :exit true)
 (start-suite)
+(feature-gate 'ffi/context)
 
 # We should get ARM support...
 (def has-ffi (and (dyn 'ffi/native) (= (os/arch) :x64)))

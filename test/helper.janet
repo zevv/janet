@@ -4,6 +4,7 @@
 (var num-tests-run 0)
 (var suite-name 0)
 (var start-time 0)
+(def feat-list @[])
 
 (def is-verbose (os/getenv "VERBOSE"))
 
@@ -46,8 +47,24 @@
   (set start-time (os/clock))
   (eprint "Starting suite " suite-name "..."))
 
+(defn feature-gate
+  [& feats]
+  (array/concat feat-list feats))
+
+(defn skip?
+  []
+  (var result nil)
+  (each feat feat-list
+    (unless (dyn feat)
+      (set result true)
+      (break)))
+  result)
+
 (defn end-suite []
   (def delta (- (os/clock) start-time))
-  (eprinf "Finished suite %s in %.3f seconds - " suite-name delta)
-  (eprint num-tests-passed " of " num-tests-run " tests passed.")
-  (if (not= num-tests-passed num-tests-run) (os/exit 1)))
+  (if (skip?)
+    (eprintf "Skipping suite %s." suite-name)
+    (do
+      (eprinf "Finished suite %s in %.3f seconds - " suite-name delta)
+      (eprint num-tests-passed " of " num-tests-run " tests passed.")
+      (if (not= num-tests-passed num-tests-run) (os/exit 1)))))

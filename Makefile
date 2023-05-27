@@ -46,7 +46,7 @@ SONAME_SETTER=-Wl,-soname,
 # For cross compilation
 HOSTCC?=$(CC)
 HOSTAR?=$(AR)
-CFLAGS?=-O2 -g
+CFLAGS?=-O0 -g -fprofile-arcs -ftest-coverage 
 LDFLAGS?=-rdynamic
 RUN:=$(RUN)
 

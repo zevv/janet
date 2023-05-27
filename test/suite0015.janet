@@ -45,4 +45,54 @@
 (assert (deep= @"abc456789" (buffer/push-at @"abc123" 3 "456789")) "buffer/push-at 2")
 (assert (deep= @"abc423" (buffer/push-at @"abc123" 3 "4")) "buffer/push-at 3")
 
+(string/format "%p" string/format)
+(string/format "%j" @{:a 1 :b 2})
+(string/format "%q" (tuple ;(range 0 161)))
+
+(string/format "%q" (table/setproto @{:a 1 :b 2} @{:c 3 :d 4 :_name "Hello"}))
+(string/format "%q" (struct/with-proto {:a 1 :b 2} :c 3 :d 4 :_name "Hello"))
+
+(print (string/format "%t" 123))
+(print (string/format "%v" 123))
+(print (string/format "%V" 123))
+(print (string/format "%g" 123))
+
+(defn- =approx [a b]
+  (< (math/abs (- a b)) 0.0001))
+
+(assert (=approx (math/acos 0.3) 1.2661036727795) "acos")
+(assert (=approx (math/asin 0.3) 0.3046926540154) "asin")
+(assert (=approx (math/atan 3) 1.2490457723983) "atan")
+(assert (=approx (math/cos 3) -0.98999249660045) "cos")
+(assert (=approx (math/cosh 3) 10.067661995777) "cosh")
+(assert (=approx (math/acosh 3) 1.7627471740391) "acosh")
+(assert (=approx (math/sin 3) 0.14112000805987) "sin")
+(assert (=approx (math/sinh 3) 10.01787492741) "sinh")
+(assert (=approx (math/asinh 3) 1.8184464592321) "asinh")
+(assert (=approx (math/tan 3) -0.14254654307428) "tan")
+(assert (=approx (math/tanh 3) 0.99505475368673) "tanh")
+(assert (=approx (math/atanh 0.3) 0.30951960420311) "atanh")
+(assert (=approx (math/exp 3) 20.085536923188) "exp")
+(assert (=approx (math/exp2 3) 8) "exp2")
+(assert (=approx (math/expm1 3) 19.085536923188) "expm1")
+(assert (=approx (math/log 3) 1.0986122886681) "log")
+(assert (=approx (math/log10 3) 0.47712125471966) "log10")
+(assert (=approx (math/log2 3) 1.5849625007212) "log2")
+(assert (=approx (math/sqrt 3) 1.7320508075689) "sqrt")
+(assert (=approx (math/cbrt 3) 1.4422495703074) "cbrt")
+(assert (=approx (math/ceil 3.1) 4) "ceil")
+(assert (=approx (math/floor 3.1) 3) "floor")
+(assert (=approx (math/trunc 3.7) 3) "trunc")
+(assert (=approx (math/round 3.7) 4) "round")
+(assert (=approx (math/log1p 3) 1.3862943611199) "log1p")
+(assert (=approx (math/erf 3) 0.999977909503) "erf")
+(assert (=approx (math/erfc 3) 0.000022090496) "erfc")
+(assert (=approx (math/atan2 3 4) 0.64350110879328) "atan2")
+(assert (=approx (math/pow 3 4) 81) "pow")
+(assert (=approx (math/hypot 3 4) 5) "hypot")
+
+
+
+
+
 (end-suite)

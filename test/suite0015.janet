@@ -91,8 +91,43 @@
 (assert (=approx (math/pow 3 4) 81) "pow")
 (assert (=approx (math/hypot 3 4) 5) "hypot")
 
+(def b (buffer/new 32))
+(buffer/push b @"BBBBB")
+(buffer/fill b 64)
+(buffer/push-byte b 65)
+(buffer/popn b 4)
+(buffer/bit @"U" 3)
+(buffer/trim @"123")
+(buffer/push-at @"111" 1 64)
+(buffer/push-at @"111" 1 @"AAA")
+(protect (buffer/push-word @"" 3.1415))
+(protect (buffer/push-at @"111" -1 64))
+(def b @"aaa")
+(buffer/push b b)
+
+(def l (ev/rwlock))
+(ev/acquire-wlock l)
+(ev/release-wlock l)
+(ev/acquire-rlock l)
+(ev/release-rlock l)
+(def l (ev/lock))
+
+(array/pop @[])
+(array/peek @[])
+(array/fill @[1 1] 2)
+(array/ensure @[1 1] 6 2)
+(def a @[1 2 3])
+(array/concat a @[1 2] 3 a)
+(array/insert a 1 @[1 2])
+(array/insert a -1 @[1 2])
+(protect (array/insert a 32 @[1 2]))
+(protect (array/remove @[1 2] 3))
+(protect (array/remove @[1 2] 1 -1))
 
 
+(def a @[1])
+(array/pop a)
+(array/trim a)
 
 
 (end-suite)

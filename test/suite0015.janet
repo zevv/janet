@@ -52,10 +52,10 @@
 (string/format "%q" (table/setproto @{:a 1 :b 2} @{:c 3 :d 4 :_name "Hello"}))
 (string/format "%q" (struct/with-proto {:a 1 :b 2} :c 3 :d 4 :_name "Hello"))
 
-(print (string/format "%t" 123))
-(print (string/format "%v" 123))
-(print (string/format "%V" 123))
-(print (string/format "%g" 123))
+(string/format "%t" 123)
+(string/format "%v" 123)
+(string/format "%V" 123)
+(string/format "%g" 123)
 
 (defn- =approx [a b]
   (< (math/abs (- a b)) 0.0001))
@@ -128,6 +128,18 @@
 (def a @[1])
 (array/pop a)
 (array/trim a)
+
+(defn- f [x &named a] (+ x 1))
+(def da (disasm f))
+(each k [:arity :min-arity :max-arity :bytecode :source :name :vararg 
+         :structarg :slotcount :constants :sourcemap :environments :defs]
+  (assert (deep= (disasm f k) (da k)) (string "disasm " k)))
+
+(protect (asm {}))
+(protect (asm { :bytecode @[]}))
+
+
+
 
 
 (end-suite)

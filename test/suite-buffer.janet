@@ -27,8 +27,11 @@
 (buffer/bit-set b 100)
 (buffer/bit-clear b 100)
 (assert (zero? (sum b)) "buffer bit set and clear")
+(assert (= false (buffer/bit b 101)) "bit get false")
 (buffer/bit-toggle b 101)
+(assert (= true (buffer/bit b 101)) "bit get true")
 (assert (= 32 (sum b)) "buffer bit set and clear")
+(assert-error "invalid bit index 1000" (buffer/bit-toggle b 1000))
 
 (def b2 @"hello world")
 
@@ -41,6 +44,17 @@
 (buffer/blit b2 "abcdefg" 5 6)
 (assert (= (string b2) "joytogjoyto") "buffer/blit 3")
 
+# buffer/push
+
+(assert (deep= (buffer/push @"AA" @"BB") @"AABB") "buffer/push buffer")
+(assert (deep= (buffer/push @"AA" 66 66) @"AABB") "buffer/push int")
+(def b @"AA")
+(assert (deep= (buffer/push b b) @"AAAA") "buffer/push buffer self")
+
+# buffer/push-byte
+(assert (deep= (buffer/push-byte @"AA" 66) @"AAB") "buffer/push-byte")
+(assert-error "bad slot #1, expected 32 bit signed integer" (buffer/push-byte @"AA" :flap))
+
 # Buffer push word
 # e755f9830
 (def b3 @"")
@@ -51,6 +65,7 @@
 (buffer/push-word b3 0xFFFFFFFF 0x1100)
 (assert (= 8 (length b3)) "buffer/push-word 3")
 (assert (= "\xFF\xFF\xFF\xFF\0\x11\0\0" (string b3)) "buffer/push-word 4")
+(assert-error "cannot convert 0.5 to machine word" (buffer/push-word @"" 0.5))
 
 # Buffer push string
 # 175925207
@@ -91,12 +106,35 @@
 
 # buffer/push-at
 # c55d93512
+# TODO: issue 1168
 (assert (deep= @"abc456" (buffer/push-at @"abc123" 3 "456"))
         "buffer/push-at 1")
 (assert (deep= @"abc456789" (buffer/push-at @"abc123" 3 "456789"))
         "buffer/push-at 2")
 (assert (deep= @"abc423" (buffer/push-at @"abc123" 3 "4"))
         "buffer/push-at 3")
+(assert (deep=  (buffer/push-at @"AAA" 1 66) @"ABA"))
+(assert (deep=  (buffer/push-at @"AAA" 1 @"B") @"ABA"))
+(assert-error "index out of range [0, 3)" (buffer/push-at @"AAA" 5 66))
 
+# buffer/slice
+(assert (deep= (buffer/slice @"12345" 2) @"345") "buffer/slice 1")
+(assert (deep= (buffer/slice @"12345" 0 -3) @"123") "buffer/slice 0 -3")
+(assert-error "start index 9 out of range [-6,5]" (buffer/slice @"12345" 9))
+(assert-error "buffer/slice end out of range" (buffer/slice @"12345" 1 8))
+
+# buffer/popn
+(assert (deep= (buffer/popn @"1234" 2) @"12") "buffer/popn 1")
+(assert (deep= (buffer/popn @"1234" 5) @"") "buffer/popn 2")
+(assert-error "buffer/popn negative" (buffer/popn @"1234" -1))
+
+# buffer/fill
+(assert (deep= (buffer/fill @"AA" 66) @"BB"))
+
+# code coverage
+(buffer/trim @"123")
+
+#buffer/new
+(assert (deep= (buffer/new 16) @"") "buffer/new 1")
 (end-suite)
 

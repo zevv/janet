@@ -28,6 +28,13 @@
 # d6967a5
 (assert (= 4 (blshift 1 2)) "left shift")
 (assert (= 1 (brshift 4 2)) "right shift")
+# unsigned shift
+(assert (= 32768 (brushift 0x80000000 16)) "right shift unsigned 1")
+(assert (= -32768 (brshift 0x80000000 16)) "right shift unsigned 2")
+# non-immediate forms
+(assert (= 32768 (brushift 0x80000000 (+ 0 16))) "right shift unsigned non-immediate")
+(assert (= -32768 (brshift 0x80000000 (+ 0 16))) "right shift non-immediate")
+(assert (= 32768 (blshift 1 (+ 0 15))) "left shift non-immediate")
 # 7e46ead
 (assert (< 1 2 3 4 5 6) "less than integers")
 (assert (< 1.0 2.0 3.0 4.0 5.0 6.0) "less than reals")

@@ -123,5 +123,19 @@
   (assert (= (string (module/expand-path "hello" ":sys:/:all:.janet"))
              ".janet/.janet/hello.janet") "module/expand-path 1"))
 
+# int?
+(assert (int? 1) "int? 1")
+(assert (int? -1) "int? -1")
+(assert (not (int? true)) "int? true")
+(assert (not (int? 3.14)) "int? 3.14")
+(assert (not (int? 8589934592)) "int? 8589934592")
+
+# memcmp
+(assert (= (memcmp "123helloabcd" "1234helloabc" 5 3 4) 0) "memcmp 1")
+(assert (< (memcmp "123hellaabcd" "1234helloabc" 5 3 4) 0) "memcmp 1")
+(assert (> (memcmp "123helloabcd" "1234hellaabc" 5 3 4) 0) "memcmp 1")
+(assert-error "invalid offset-a: 1" (memcmp "a" "b" 1 1 0))
+(assert-error "invalid offset-b: 1" (memcmp "a" "b" 1 0 1))
+
 (end-suite)
 

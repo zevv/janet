@@ -92,10 +92,10 @@
 
 # sendto/recvfrom
 
-(def s1 (net/listen "127.0.0.1" "1903" :datagram))
-(def s2 (net/listen "127.0.0.1" "1904" :datagram))
-(net/send-to s1 (net/address "127.0.0.1" "1904" :datagram) "123")
-(assert (= (net/address-unpack (net/recv-from s2 1024 @"")) ["127.0.0.1" 1903]))
+(def s1 (net/listen "127.0.0.1" "19003" :datagram))
+(def s2 (net/listen "127.0.0.1" "19004" :datagram))
+(net/send-to s1 (net/address "127.0.0.1" "19004" :datagram) "123")
+(assert (= (net/address-unpack (net/recv-from s2 1024 @"")) ["127.0.0.1" 19003]))
 
 # Listen errors
 (assert (not (first (protect (net/listen "123.123.123.123" "1")))))

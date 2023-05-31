@@ -11,7 +11,9 @@
 (defn assert
   "Override's the default assert with some nice error handling."
   [x &opt e]
-  (default e "assert error")
+  (default e (let [frame (last (debug/stack (fiber/current)))]
+               (string/format "assert error at %s line %d"
+                              (frame :source) (frame :source-line))))
   (++ num-tests-run)
   (when x (++ num-tests-passed))
   (def str (string e))

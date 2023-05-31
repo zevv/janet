@@ -37,17 +37,17 @@
   (net/address "127.0.0.1" "http" :nonsense))
 
 # Basic listen/connect/shutdown sequence
-(def s1 (net/listen "127.0.0.1" "1801" :stream))
-(assert (= (net/localname s1) ["127.0.0.1" 1801]))
+(def s1 (net/listen "127.0.0.1" "18001" :stream))
+(assert (= (net/localname s1) ["127.0.0.1" 18001]))
 
-(def s2 (net/connect "127.0.0.1" "1801" :stream "127.0.0.1" "1802"))
-(assert (= (net/localname s2) ["127.0.0.1" 1802]))
+(def s2 (net/connect "127.0.0.1" "18001" :stream "127.0.0.1" "18002"))
+(assert (= (net/localname s2) ["127.0.0.1" 18002]))
 
-(def s3 (net/connect "127.0.0.1" "1801" :stream))
-(assert (not= (net/localname s3) ["127.0.0.1" 1802]))
+(def s3 (net/connect "127.0.0.1" "18001" :stream))
+(assert (not= (net/localname s3) ["127.0.0.1" 18002]))
 
 (assert (not (first (protect
-  (net/connect "127.0.0.1" "1801" :stream "127.0.0.1" "1802"))))) # already bound
+  (net/connect "127.0.0.1" "18001" :stream "127.0.0.1" "18002"))))) # already bound
 
 # for code coverage
 (net/flush s2)
@@ -63,13 +63,13 @@
 
 # write/read/chunk
 
-(def server (run-server "0.0.0.0" "1901"))
+(def server (run-server "0.0.0.0" "19001"))
 
-(def s (net/connect "127.0.0.1" "1901"))
+(def s (net/connect "127.0.0.1" "19001"))
 (assert (deep= (net/chunk s 6) @"123456"))
 (net/close s)
 
-(def s (net/connect "127.0.0.1" "1901"))
+(def s (net/connect "127.0.0.1" "19001"))
 (assert (deep= (net/read s 6) @"123"))
 (net/close s)
 
@@ -83,7 +83,7 @@
   (assert (= (net/address-unpack (net/address :unix "/tmp/sock"))
             ["/tmp/sock"] ))
 
-  (os/rm "/tmp/sock")
+  (protect (os/rm "/tmp/sock"))
   (def server (run-server :unix "/tmp/sock"))
   (def s (net/connect :unix "/tmp/sock"))
   (assert (deep= (net/read s 3) @"123"))
